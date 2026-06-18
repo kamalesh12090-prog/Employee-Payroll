@@ -1,0 +1,120 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace EmployeePayrollSystem
+{
+    public abstract class Employee
+    {
+        public string EmployeeId { get; private set; }
+        public string EmployeeName { get; private set; }
+        public double BasicSalary { get; protected set; }
+
+        protected Employee(string employeeId, string employeeName, double basicSalary)
+        {
+            EmployeeId = employeeId;
+            EmployeeName = employeeName;
+            BasicSalary = basicSalary;
+        }
+
+        public abstract double CalculateSalary();
+
+        public void DisplayEmployeeDetails()
+        {
+            Console.WriteLine($"Employee ID   : {EmployeeId}");
+            Console.WriteLine($"Name          : {EmployeeName}");
+            Console.WriteLine($"Basic Salary  : ₹{BasicSalary}");
+            Console.WriteLine($"Net Salary    : ₹{CalculateSalary()}");
+        }
+    }
+
+    public class Developer : Employee
+    {
+        private double projectAllowance;
+        private double techBonus;
+
+        public Developer(string employeeId, string employeeName, double basicSalary,
+                         double projectAllowance, double techBonus)
+            : base(employeeId, employeeName, basicSalary)
+        {
+            this.projectAllowance = projectAllowance;
+            this.techBonus = techBonus;
+        }
+
+        public override double CalculateSalary()
+        {
+            return BasicSalary + projectAllowance + techBonus;
+        }
+    }
+
+    public class Manager : Employee
+    {
+        private double teamAllowance;
+        private double performanceBonus;
+
+        public Manager(string employeeId, string employeeName, double basicSalary,
+                       double teamAllowance, double performanceBonus)
+            : base(employeeId, employeeName, basicSalary)
+        {
+            this.teamAllowance = teamAllowance;
+            this.performanceBonus = performanceBonus;
+        }
+
+        public override double CalculateSalary()
+        {
+            return BasicSalary + teamAllowance + performanceBonus;
+        }
+    }
+
+    public class Tester : Employee
+    {
+        private double testIncentivePerCycle;
+        private int cyclesCompleted;
+
+        public Tester(string employeeId, string employeeName, double basicSalary,
+                      double testIncentivePerCycle, int cyclesCompleted)
+            : base(employeeId, employeeName, basicSalary)
+        {
+            this.testIncentivePerCycle = testIncentivePerCycle;
+            this.cyclesCompleted = cyclesCompleted;
+        }
+
+        public override double CalculateSalary()
+        {
+            return BasicSalary + (testIncentivePerCycle * cyclesCompleted);
+        }
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            List<Employee> employees = new List<Employee>
+            {
+                new Developer("DEV101", "Sneha Rao", 40000, 5000, 3000),
+                new Manager("MGR201", "Arjun Mehta", 60000, 8000, 10000),
+                new Tester("TST301", "Priya Nair", 35000, 1500, 4)
+            };
+
+            Console.WriteLine("=========================================");
+            Console.WriteLine("       EMPLOYEE PAYROLL SYSTEM");
+            Console.WriteLine("=========================================");
+
+            foreach (Employee emp in employees)
+            {
+                Console.WriteLine($"\n--- {emp.GetType().Name} ---");
+                emp.DisplayEmployeeDetails();
+            }
+
+            double totalPayout = 0;
+
+            foreach (Employee emp in employees)
+            {
+                totalPayout += emp.CalculateSalary();
+            }
+
+            Console.WriteLine("\n=========================================");
+            Console.WriteLine($"Total Monthly Payout: ₹{totalPayout}");
+            Console.WriteLine("=========================================");
+        }
+    }
+}
